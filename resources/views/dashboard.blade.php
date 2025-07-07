@@ -9,7 +9,7 @@
                 <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                     <div class="d-flex justify-content-between w-100 align-items-center mb-3">
                         <a href="/" class="text-white text-decoration-none">
-                            <span class="fs-5 fw-bolder d-none d-sm-inline">CallTrack Pro</span>
+                            <span class="fs-5 fw-bolder sidebar-text">CallTrack Pro</span>
                         </a>
                         <!-- Close button for mobile -->
                         <button id="sidebarClose" class="btn btn-sm btn-outline-light d-md-none">
@@ -26,8 +26,8 @@
                             <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle" style="width: 15px; height: 15px;"></span>
                         </div>
                         <div class="mt-2 small">
-                            <p class="mb-0 text-white">{{ auth()->user()->name }}</p>
-                            <p class="text-secondary mb-0 small">Supervisor</p>
+                            <p class="mb-0 text-white sidebar-text">{{ auth()->user()->name }}</p>
+                            <p class="text-secondary mb-0 small sidebar-text">Supervisor</p>
                         </div>
                     </div>
                     
@@ -35,47 +35,51 @@
                         <li class="nav-item w-100">
                             <a href="#" class="nav-link active px-3 py-2 d-flex align-items-center">
                                 <i class="fas fa-home me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Dashboard</span>
+                                <span class="ms-1 sidebar-text">Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item w-100">
                             <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                                 <i class="fas fa-phone me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Call Tickets</span>
+                                <span class="ms-1 sidebar-text">Call Tickets</span>
                             </a>
                         </li>
                         <li class="nav-item w-100">
                             <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                                 <i class="fas fa-user me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Agents</span>
+                                <span class="ms-1 sidebar-text">Agents</span>
                             </a>
                         </li>
                         <li class="nav-item w-100">
                             <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                                 <i class="fas fa-chart-line me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Reports</span>
+                                <span class="ms-1 sidebar-text">Reports</span>
                             </a>
                         </li>
                         <li class="nav-item w-100">
                             <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                                 <i class="fas fa-cog me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Settings</span>
+                                <span class="ms-1 sidebar-text">Settings</span>
                             </a>
                         </li>
                         
                         <li class="border-top my-3 w-100"></li>
                         
                         <li class="nav-item w-100">
-                            <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <a href="{{ route('dashboard') }}#help" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                                 <i class="fas fa-question-circle me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Help Center</span>
+                                <span class="ms-1 sidebar-text">Help Center</span>
                             </a>
                         </li>
                         <li class="nav-item w-100">
-                            <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                                <i class="fas fa-sign-out-alt me-2"></i>
-                                <span class="ms-1 d-none d-sm-inline">Logout</span>
-                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
+                                @csrf
+                                <a href="#" onclick="event.preventDefault(); this.closest('form').submit();" 
+                                   class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                                    <i class="fas fa-sign-out-alt me-2"></i>
+                                    <span class="ms-1 sidebar-text">Logout</span>
+                                </a>
+                            </form>
                         </li>
                     </ul>
                     
@@ -83,7 +87,7 @@
                         <div class="d-flex align-items-center px-3 py-2 bg-dark border-top border-secondary">
                             <div class="d-flex align-items-center">
                                 <span class="bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></span>
-                                <small class="text-white">System Status: Online</small>
+                                <small class="text-white sidebar-text">System Status: Online</small>
                             </div>
                         </div>
                     </div>
@@ -642,16 +646,18 @@
                 if (overlay) {
                     overlay.classList.toggle('active');
                 }
+                
+                // The sidebar-text class will automatically handle visibility
             });
-        }
-        
-        // Close sidebar on mobile
+        }                // Close sidebar on mobile
         if (sidebarClose) {
             sidebarClose.addEventListener('click', function() {
                 sidebar.classList.remove('show');
                 if (overlay) {
                     overlay.classList.remove('active');
                 }
+                
+                // The sidebar-text class will automatically handle visibility
             });
         }
         
@@ -660,6 +666,8 @@
             overlay.addEventListener('click', function() {
                 sidebar.classList.remove('show');
                 overlay.classList.remove('active');
+                
+                // The sidebar-text class will automatically handle visibility
             });
         }
         

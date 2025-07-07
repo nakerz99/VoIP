@@ -36,6 +36,21 @@
                 transition: margin-left 0.3s;
             }
             
+            /* Custom class for sidebar text visibility */
+            .sidebar-text {
+                display: none;
+            }
+            
+            @media (min-width: 576px) {
+                .sidebar-text {
+                    display: inline;
+                }
+            }
+            
+            #sidebar.show .sidebar-text {
+                display: inline !important;
+            }
+            
             @media (max-width: 767.98px) {
                 #sidebar {
                     margin-left: -100%;
@@ -48,6 +63,11 @@
                 }
                 
                 /* Show text labels when sidebar is toggled open on mobile */
+                #sidebar.show .nav-link .d-none {
+                    display: inline !important;
+                }
+                
+                /* Also show text for other elements in the sidebar when open */
                 #sidebar.show .d-none.d-sm-inline {
                     display: inline !important;
                 }
