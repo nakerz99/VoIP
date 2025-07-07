@@ -101,18 +101,50 @@ class CallTicketController extends Controller
      */
     public function complete(CallTicket $callTicket): RedirectResponse
     {
+        $endTime = now();
+        $startTime = $callTicket->call_started_at;
+        
+        // Calculate call duration in seconds
+        $callDuration = $startTime ? $endTime->diffInSeconds($startTime) : 0;
+        
         $callTicket->update([
             'status' => 'completed',
-            'call_ended_at' => now(),
+            'call_ended_at' => $endTime,
+            'call_duration' => $callDuration,
         ]);
 
         // End the call via VOIP if applicable
         if ($callTicket->voip_call_id) {
             $this->voipService->endCall($callTicket->voip_call_id);
+        } else {
+            // For manually created tickets without VOIP ID, we need to create the call log ourselves
+            $this->createCallLog($callTicket);
         }
 
         return redirect()->route('dashboard')
             ->with('success', 'Call completed successfully.');
+    }
+    
+    /**
+     * Create call log entry from call ticket
+     * 
+     * @param CallTicket $callTicket
+     * @return \App\Models\CallLog
+     */
+    private function createCallLog(CallTicket $callTicket): \App\Models\CallLog
+    {
+        return \App\Models\CallLog::create([
+            'caller_id' => $callTicket->caller_id,
+            'agent_id' => $callTicket->agent_id,
+            'phone_number' => $callTicket->phone_number,
+            'call_type' => 'inbound', // Default to inbound, could be determined from metadata
+            'status' => 'completed',
+            'call_started_at' => $callTicket->call_started_at,
+            'call_ended_at' => $callTicket->call_ended_at,
+            'call_duration' => $callTicket->call_duration ?? 0, // Ensure we always have a value
+            'voip_call_id' => $callTicket->voip_call_id ?? ('MANUAL-' . \Illuminate\Support\Str::random(12)),
+            'voip_metadata' => $callTicket->voip_metadata,
+        ]);
     }
 
     /**

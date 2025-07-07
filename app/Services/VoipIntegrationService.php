@@ -134,8 +134,15 @@ class VoipIntegrationService
         $callTicket = CallTicket::where('voip_call_id', $voipCallId)->first();
         
         if ($callTicket) {
+            $endTime = now();
+            $startTime = $callTicket->call_started_at;
+            
+            // Calculate call duration in seconds
+            $callDuration = $startTime ? $endTime->diffInSeconds($startTime) : 0;
+            
             $callTicket->update([
-                'call_ended_at' => now(),
+                'call_ended_at' => $endTime,
+                'call_duration' => $callDuration,
                 'status' => 'completed'
             ]);
             
@@ -197,6 +204,12 @@ class VoipIntegrationService
      */
     private function createCallLog(CallTicket $callTicket): CallLog
     {
+        // Calculate call duration in seconds if not already set
+        $callDuration = $callTicket->call_duration;
+        if (!$callDuration && $callTicket->call_started_at && $callTicket->call_ended_at) {
+            $callDuration = $callTicket->call_ended_at->diffInSeconds($callTicket->call_started_at);
+        }
+        
         return CallLog::create([
             'caller_id' => $callTicket->caller_id,
             'agent_id' => $callTicket->agent_id,
@@ -205,7 +218,7 @@ class VoipIntegrationService
             'status' => 'completed',
             'call_started_at' => $callTicket->call_started_at,
             'call_ended_at' => $callTicket->call_ended_at,
-            'call_duration' => $callTicket->call_duration,
+            'call_duration' => $callDuration ?? 0, // Ensure we always have a duration
             'voip_call_id' => $callTicket->voip_call_id,
             'voip_metadata' => $callTicket->voip_metadata,
         ]);
