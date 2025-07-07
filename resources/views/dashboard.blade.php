@@ -348,7 +348,7 @@
             </script>
 
             <!-- Active Call Queue & Panels -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div class="row mt-4">
                 <!-- Call Queue Panel - Takes up 2/3 of width -->
                 <div class="col-lg-8">
                     <div class="card mb-4">
@@ -495,66 +495,67 @@
             </div>
 
             <!-- Recent Call History -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="row mt-4">
                 <!-- Call History Table -->
-                <div class="lg:col-span-2 bg-white shadow-sm border border-gray-200 rounded-lg">
-                    <div class="border-b border-gray-200 px-6 py-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Recent Call History</h3>
-                        <p class="text-sm text-gray-600">Latest customer interactions</p>
-                    </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Recent Call History</h5>
+                            <p class="text-muted small mb-0">Latest customer interactions</p>
+                        </div>
                     
                     @if($recentCallLogs->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full">
-                                <thead class="bg-gray-50">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-light">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Caller</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                        <th>Caller</th>
+                                        <th>Type</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody>
                                     @foreach($recentCallLogs as $log)
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-white font-medium text-xs mr-3">
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-medium me-2" style="width: 32px; height: 32px; font-size: 0.75rem;">
                                                         {{ substr($log->caller->name ?? 'U', 0, 1) }}
                                                     </div>
                                                     <div>
-                                                        <div class="text-sm font-medium text-gray-900">{{ $log->caller->name ?? 'Unknown' }}</div>
-                                                        <div class="text-xs text-gray-500">{{ $log->phone_number }}</div>
+                                                        <div class="fw-medium">{{ $log->caller->name ?? 'Unknown' }}</div>
+                                                        <div class="small text-secondary">{{ $log->phone_number }}</div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4">
+                                            <td>
                                                 @if($log->call_type === 'inbound')
-                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
+                                                    <span class="badge bg-primary">
                                                         ← Inbound
                                                     </span>
                                                 @else
-                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
+                                                    <span class="badge bg-success">
                                                         → Outbound
                                                     </span>
                                                 @endif
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-900">
+                                            <td>
                                                 {{ $log->call_duration_formatted }}
                                             </td>
-                                            <td class="px-6 py-4">
+                                            <td>
                                                 @if($log->status === 'completed')
-                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">✓ Completed</span>
+                                                    <span class="badge bg-success">✓ Completed</span>
                                                 @elseif($log->status === 'abandoned')
-                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">✗ Abandoned</span>
+                                                    <span class="badge bg-danger">✗ Abandoned</span>
                                                 @elseif($log->status === 'transferred')
-                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">↗ Transferred</span>
+                                                    <span class="badge bg-primary">↗ Transferred</span>
                                                 @else
-                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">{{ ucfirst($log->status) }}</span>
+                                                    <span class="badge bg-secondary">{{ ucfirst($log->status) }}</span>
                                                 @endif
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-900">
+                                            <td>
                                                 {{ $log->call_started_at->format('H:i') }}
                                             </td>
                                         </tr>
@@ -563,17 +564,16 @@
                             </table>
                         </div>
                     @else
-                        <div class="text-center py-8">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            <p class="mt-2 text-sm text-gray-500">No recent call history.</p>
+                        <div class="text-center py-5">
+                            <i class="fas fa-history fa-3x text-secondary mb-3"></i>
+                            <p class="text-muted">No recent call history.</p>
                         </div>
                     @endif
+                    </div>
                 </div>
 
                 <!-- Right Sidebar Content -->
-                <div class="mb-4">
+                <div class="col-lg-4">
                     <!-- Performance Panel -->
                     <div class="card p-4 mb-4">
                         <h3 class="fs-5 fw-semibold mb-4">Today's Performance</h3>

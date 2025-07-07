@@ -43,6 +43,12 @@ composer install
 cp .env.example .env
 php artisan key:generate
 
+# Install JavaScript dependencies
+npm install
+
+# Build assets for production
+npm run build
+
 # Run migrations and seed sample data
 php artisan migrate --seed
 
@@ -98,11 +104,32 @@ php artisan serve
 
 
 
-## Production Setup Tips
+## Production Deployment
 
+### Building Assets for Production
+Before deploying to production, make sure to build the assets:
+```bash
+# Install dependencies
+npm install
+
+# Build for production
+npm run build
+```
+
+The built assets will be located in the `public/build` directory and automatically referenced by the application.
+
+### Production Setup Tips
 - Configure database connection in `.env`
 - Enable HTTPS in production
 - Set up proper caching
+- Configure the web server (Apache/Nginx) to point to the `public` directory
+- Set appropriate file permissions
+- Configure environment variables for production
+
+### Performance Optimization
+- Enable OPcache for PHP
+- Consider using Redis for caching and session management
+- Set up a CDN for static assets
 
 ## Support
 
