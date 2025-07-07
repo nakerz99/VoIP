@@ -224,4 +224,31 @@ class VoipIntegrationService
         
         return $callData['priority'] ?? 'medium';
     }
+    
+    /**
+     * Log a manually created ticket
+     * 
+     * This method logs when an agent manually creates a ticket in the system
+     * without it coming directly from the VOIP system.
+     * 
+     * @param CallTicket $ticket The ticket that was created
+     * @return void
+     */
+    public function logManualTicketCreation(CallTicket $ticket): void
+    {
+        // In a real implementation, this might:
+        // 1. Create a record in the VOIP system
+        // 2. Assign a VOIP ID to the ticket
+        // 3. Potentially trigger workflows in the VOIP system
+        
+        Log::info('Manual ticket created', [
+            'ticket_id' => $ticket->id,
+            'agent_id' => $ticket->agent_id,
+            'caller_id' => $ticket->caller_id,
+            'phone' => $ticket->phone_number,
+            'created_at' => now()->toDateTimeString(),
+        ]);
+        
+        // Placeholder for future VOIP system integration
+    }
 }

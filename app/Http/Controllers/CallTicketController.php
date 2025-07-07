@@ -173,4 +173,61 @@ class CallTicketController extends Controller
         return redirect()->route('call-tickets.show', $callTicket)
             ->with('success', 'Call escalated successfully.');
     }
+
+    /**
+     * Show the form for creating a new call ticket.
+     */
+    public function create(): View
+    {
+        $callers = \App\Models\Caller::orderBy('name')->get();
+        $agents = \App\Models\User::orderBy('name')->get();
+        $priorities = ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'urgent' => 'Urgent'];
+        
+        return view('call-tickets.create', compact('callers', 'agents', 'priorities'));
+    }
+
+    /**
+     * Store a newly created call ticket.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'caller_id' => 'required|exists:callers,id',
+            'phone_number' => 'required|string',
+            'priority' => 'required|in:low,medium,high,urgent',
+            'agent_id' => 'nullable|exists:users,id',
+            'description' => 'nullable|string',
+        ]);
+        
+        // Get caller info
+        $caller = \App\Models\Caller::find($validated['caller_id']);
+        
+        // Create the call ticket
+        $ticket = new CallTicket();
+        $ticket->caller_id = $validated['caller_id'];
+        $ticket->phone_number = $validated['phone_number'];
+        $ticket->caller_name = $caller->name;
+        $ticket->priority = $validated['priority'];
+        $ticket->agent_id = $validated['agent_id'];
+        $ticket->status = 'active';
+        $ticket->call_started_at = now();
+        $ticket->voip_call_id = 'MANUAL-' . uniqid();
+        $ticket->save();
+        
+        // Add initial note if description provided
+        if (!empty($validated['description'])) {
+            $note = new CallNote();
+            $note->call_ticket_id = $ticket->id;
+            $note->user_id = $request->user()->id;
+            $note->note = $validated['description'];
+            $note->type = 'general';
+            $note->save();
+        }
+        
+        // Log activity with VoIP service
+        $this->voipService->logManualTicketCreation($ticket);
+        
+        return redirect()->route('call-tickets.show', $ticket)
+            ->with('success', 'Call ticket created successfully.');
+    }
 }

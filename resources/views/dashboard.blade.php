@@ -107,9 +107,9 @@
                                 <button class="btn btn-outline-secondary btn-sm me-2">
                                     <i class="fas fa-filter me-1"></i> Filter
                                 </button>
-                                <button class="btn btn-primary btn-sm">
+                                <a href="{{ route('call-tickets.create') }}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-plus me-1"></i> New Ticket
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </nav>
@@ -609,9 +609,9 @@
                     <div class="card p-4 mb-4">
                         <h3 class="fs-5 fw-semibold mb-4">Quick Actions</h3>
                         <div class="d-grid gap-3">
-                            <button class="btn btn-primary">
+                            <a href="{{ route('call-tickets.create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus me-2"></i> Create New Ticket
-                            </button>
+                            </a>
                             <button class="btn btn-success">
                                 <i class="fas fa-chart-bar me-2"></i> View Reports
                             </button>

@@ -13,7 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Call Ticket routes
-    Route::resource('call-tickets', CallTicketController::class)->except(['create', 'store', 'edit', 'destroy']);
+    Route::resource('call-tickets', CallTicketController::class)->except(['edit', 'destroy']);
     Route::post('/call-tickets/{callTicket}/notes', [CallTicketController::class, 'addNote'])->name('call-tickets.add-note');
     Route::post('/call-tickets/{callTicket}/assign-to-me', [CallTicketController::class, 'assignToMe'])->name('call-tickets.assign-to-me');
     Route::post('/call-tickets/{callTicket}/complete', [CallTicketController::class, 'complete'])->name('call-tickets.complete');
