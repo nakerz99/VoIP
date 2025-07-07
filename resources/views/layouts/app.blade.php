@@ -47,6 +47,11 @@
                     margin-left: 0;
                 }
                 
+                /* Show text labels when sidebar is toggled open on mobile */
+                #sidebar.show .d-none.d-sm-inline {
+                    display: inline !important;
+                }
+                
                 #content {
                     width: 100%;
                     margin-left: 0;
