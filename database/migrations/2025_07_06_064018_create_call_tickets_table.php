@@ -11,6 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Make sure the callers table exists before creating this relationship
+        if (!Schema::hasTable('callers')) {
+            Schema::create('callers', function (Blueprint $table) {
+                $table->id();
+                $table->string('phone_number')->unique();
+                $table->string('name')->nullable();
+                $table->string('email')->nullable();
+                $table->text('address')->nullable();
+                $table->string('company')->nullable();
+                $table->text('notes')->nullable();
+                $table->boolean('is_blocked')->default(false);
+                $table->json('metadata')->nullable(); // for additional caller information
+                $table->timestamps();
+            });
+        }
+        
         Schema::create('call_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('caller_id')->constrained()->onDelete('cascade');

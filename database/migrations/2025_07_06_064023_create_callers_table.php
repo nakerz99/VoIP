@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip if the table already exists
+        if (Schema::hasTable('callers')) {
+            return;
+        }
+        
         Schema::create('callers', function (Blueprint $table) {
             $table->id();
             $table->string('phone_number')->unique();
